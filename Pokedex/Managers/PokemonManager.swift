@@ -1,19 +1,13 @@
-//
-//  PokemonManager.swift
-//  Pokedex
-//
-//  Created by user277066 on 6/12/25.
-//
-
 // Pokedex/Managers/PokemonManager.swift
 import Foundation
 
 class PokemonManager {
-    func getPokemon(completion: @escaping ([Pokemon]) -> (), failure: @escaping (Error) -> ()) {
-        let urlString = "https://pokeapi.co/api/v2/pokemon?limit=151"
+    // Adicione um limite e offset padrão para a paginação
+    func getPokemon(limit: Int = 20, offset: Int = 0, completion: @escaping ([Pokemon]) -> (), failure: @escaping (Error) -> ()) { // MODIFICADO
+        let urlString = "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)" // MODIFICADO
 
         Bundle.main.fetchData(url: urlString, model: PokemonPage.self) { pokemonPage in
-            completion(pokemonPage.results) // Retorna apenas a lista de Pokémon
+            completion(pokemonPage.results)
         } failure: { error in
             failure(error)
         }
@@ -26,7 +20,7 @@ class PokemonManager {
             
         } failure: { error in
             print(error)
-            failure(error) 
+            failure(error)
         }
     }
 }
