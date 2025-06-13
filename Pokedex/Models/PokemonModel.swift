@@ -3,8 +3,8 @@ import Foundation
 
 struct PokemonPage: Codable {
     let count: Int
-    let next: String? // next pode ser nulo se não houver mais páginas
-    let previous: String? // previous pode ser nulo
+    let next: String? 
+    let previous: String?
     let results: [Pokemon]
 }
 
@@ -20,17 +20,15 @@ struct DetailPokemon: Codable {
     let id: Int
     let height: Int
     let weight: Int
-    let sprites: Sprites // Adicionar sprites
-    let types: [PokemonType] // Adicionar tipos
-    let abilities: [PokemonAbility] // Adicionar habilidades
-    let stats: [PokemonStat] // Adicionar stats
-    // Você pode adicionar moves aqui também se precisar
+    let sprites: Sprites
+    let types: [PokemonType]
+    let abilities: [PokemonAbility]
+    let stats: [PokemonStat]
 }
 
-// Novas structs para objetos JSON aninhados
 struct Sprites: Codable {
-    let frontDefault: String? // URL para o sprite padrão da frente
-    // Adicione outros sprites conforme necessário, ex: backDefault, frontShiny, etc.
+    let frontDefault: String?
+    
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
     }
