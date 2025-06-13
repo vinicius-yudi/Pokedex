@@ -4,12 +4,12 @@ import SwiftData
 
 @Model
 class Usuario {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var nomeDeUsuario: String
     var email: String
     var passwordHash: String // Alterado de 'senha' para 'passwordHash'
 
-    @Relationship(deleteRule: .cascade) var favoritos: [Favorito]?
+    @Relationship(inverse: \Favorito.usuario) var favoritos: [Favorito] = []
 
     init(id: UUID = UUID(), nomeDeUsuario: String, email: String, passwordHash: String) {
         self.id = id

@@ -1,3 +1,5 @@
+// Pokedex/Views/PokemonView.swift
+
 import SwiftUI
 
 struct PokemonView: View {
@@ -12,30 +14,42 @@ struct PokemonView: View {
                 case .empty:
                     ProgressView()
                         .frame(width: dimensions, height: dimensions)
+                        .background(AppColors.cardBackground)
+                        .clipShape(Circle())
+                        .opacity(0.8)
+                        .animation(.easeIn(duration: 0.5))
 
                 case .success(let image):
                     image
                         .resizable()
                         .scaledToFit()
                         .frame(width: dimensions, height: dimensions)
+                        .background(AppColors.cardBackground)
+                        .clipShape(Circle())
+                        .animation(.easeIn(duration: 0.5))
 
                 case .failure(_):
-                    Image(systemName: "xmark.octagon")
+                    Image(systemName: "xmark-octagon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: dimensions, height: dimensions)
-                        .foregroundColor(.red)
+                        .foregroundColor(AppColors.errorText)
+                        .background(AppColors.cardBackground)
+                        .clipShape(Circle())
+                        .animation(.easeIn(duration: 0.5))
 
                 @unknown default:
                     EmptyView()
                 }
             }
-            .background(.thinMaterial)
-            .clipShape(Circle())
-
             Text("\(pokemon.name.capitalized)")
-                .font(.system(size: 16, weight: .regular, design: .monospaced))
-                .padding(.bottom, 20)
+                .font(AppFonts.capitalizedName())
+                .foregroundColor(AppColors.textPrimary)
+                .padding(.bottom, AppSpacing.medium)
         }
+        .background(AppColors.cardBackground)
+        .cornerRadius(AppCornerRadius.medium)
+        .shadow(color: .black.opacity(0.2), radius: AppShadow.defaultShadow.radius, x: AppShadow.defaultShadow.x, y: AppShadow.defaultShadow.y)
+        .padding(AppSpacing.xsmall)
     }
 }

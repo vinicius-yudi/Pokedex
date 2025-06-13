@@ -3,15 +3,14 @@ import SwiftData
 
 @Model
 class Favorito {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var pokemonId: Int
     var pokemonName: String
     var pokemonImageUrl: String?
 
- 
-    var usuario: Usuario?
+    @Relationship var usuario: Usuario
 
-    init(id: UUID = UUID(), pokemonId: Int, pokemonName: String, pokemonImageUrl: String? = nil, usuario: Usuario? = nil) {
+    init(id: UUID = UUID(), pokemonId: Int, pokemonName: String, pokemonImageUrl: String? = nil, usuario: Usuario) {
         self.id = id
         self.pokemonId = pokemonId
         self.pokemonName = pokemonName

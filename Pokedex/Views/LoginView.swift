@@ -42,7 +42,7 @@ struct LoginView: View {
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.green)
+                .background(Color.blue)
                 .cornerRadius(10)
                 .padding(.horizontal)
                 .onChange(of: viewModel.usuarioLogado) { oldUser, newUser in
