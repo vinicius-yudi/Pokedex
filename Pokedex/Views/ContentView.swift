@@ -4,7 +4,7 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @StateObject var vm = ViewModel()
+    @StateObject var vm = PokedexListViewModel() // MODIFICADO: Usando PokedexListViewModel
     @State private var showAuthenticationView = true
     @State private var usuarioLogado: Usuario? = nil
     @State private var isSearching = false // Novo estado para controlar a visibilidade da barra de pesquisa

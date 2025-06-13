@@ -1,16 +1,19 @@
+// Pokedex/Views/PokemonView.swift
+
 import SwiftUI
 
 struct PokemonView: View {
-    @EnvironmentObject var vm: ViewModel
+    // AGORA USA PokedexListViewModel
+    @EnvironmentObject var vm: PokedexListViewModel // MODIFICADO
     let pokemon: Pokemon
     let dimensions: Double = 140
 
     var body: some View {
         VStack {
             // Substituído AsyncImage por CachedImageView
-            CachedImageView(urlString: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(vm.getPokemonIndex(pokemon: pokemon)).png",
+            CachedImageView(urlString: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(vm.getPokemonIndex(pokemon: pokemon)).png", // MODIFICADO
                             dimensions: dimensions,
-                            circleBackground: true) // É um círculo
+                            circleBackground: true)
 
             Text("\(pokemon.name.capitalized)")
                 .font(AppFonts.capitalizedName())
