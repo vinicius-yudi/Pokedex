@@ -17,11 +17,19 @@ class ViewModel: ObservableObject {
     
     // Used with searchText to filter pokemon results
     var filteredPokemon: [Pokemon] {
-                return searchText == "" ? pokemonList : pokemonList.filter { $0.name.contains(searchText.lowercased()) }
-            }
+        return searchText == "" ? pokemonList : pokemonList.filter { $0.name.contains(searchText.lowercased()) }
+    }
     
     init() {
-        self.pokemonList = pokemonManager.getPokemon()
+        // CORREÇÃO: Adicionar closures de completion e failure na chamada de getPokemon()
+        pokemonManager.getPokemon { [weak self] pokemons in
+            DispatchQueue.main.async {
+                self?.pokemonList = pokemons
+            }
+        } failure: { error in
+            // Tratamento de erro: imprimir o erro, e você pode adicionar lógica para mostrar um alerta na UI
+            print("Erro ao carregar lista de Pokémon: \(error.localizedDescription)")
+        }
     }
     
     
@@ -37,12 +45,14 @@ class ViewModel: ObservableObject {
     func getDetails(pokemon: Pokemon) {
         let id = getPokemonIndex(pokemon: pokemon)
         
-        self.pokemonDetails = DetailPokemon(id: 0, height: 0, weight: 0)
+        self.pokemonDetails = nil // Limpa detalhes antigos enquanto carrega novos
         
         pokemonManager.getDetailedPokemon(id: id) { data in
             DispatchQueue.main.async {
                 self.pokemonDetails = data
             }
+        } failure: { error in
+            print(error.localizedDescription) // Tratamento de erro para detalhes
         }
     }
     
@@ -52,5 +62,22 @@ class ViewModel: ObservableObject {
         let string = String(format: "%.2f", dValue / 10)
         
         return string
+    }
+
+    // NOVA FUNÇÃO: Obtém os nomes dos tipos do Pokémon
+    func getPokemonTypes(pokemon: DetailPokemon) -> String {
+        pokemon.types.map { $0.type.name.capitalized }.joined(separator: ", ")
+    }
+
+    // NOVA FUNÇÃO: Obtém os nomes das habilidades do Pokémon
+    func getPokemonAbilities(pokemon: DetailPokemon) -> String {
+        pokemon.abilities.map { $0.ability.name.capitalized }.joined(separator: ", ")
+    }
+
+    // NOVA FUNÇÃO: Obtém os status base do Pokémon formatados
+    func getPokemonStats(pokemon: DetailPokemon) -> String {
+        pokemon.stats.map { stat in
+            "\(stat.stat.name.capitalized): \(stat.baseStat)"
+        }.joined(separator: "\n")
     }
 }
