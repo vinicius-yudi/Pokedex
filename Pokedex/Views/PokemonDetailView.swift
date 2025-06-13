@@ -1,10 +1,5 @@
 // Pokedex/Views/PokemonDetailView.swift
-//
-//  PokemonDetailView.swift
-//  Pokedex
-//
-//  Created by user277066 on 6/12/25.
-//
+// (Conteúdo completo do arquivo com as correções)
 
 import SwiftUI
 
@@ -69,7 +64,6 @@ struct PokemonDetailView: View {
                     .padding(.horizontal, AppSpacing.medium)
                     .padding(.bottom, AppSpacing.xlarge)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
-                    
                 }
             }
         }
@@ -81,14 +75,14 @@ struct PokemonDetailView: View {
     }
 }
 
-// MARK: - Subviews para PokemonDetailView
+// MARK: - Subviews para PokemonDetailView (coloque estas structs DENTRO do arquivo PokemonDetailView.swift)
 
 struct PokemonImageView: View {
-    @ObservedObject var vm: ViewModel // Usar ObservedObject para VM
+    @ObservedObject var vm: ViewModel
     let pokemon: Pokemon
 
     var body: some View {
-        Group { // Usar Group para o indicador de carregamento
+        Group {
             if let pokemonDetails = vm.pokemonDetails {
                 AsyncImage(url: URL(string: pokemonDetails.sprites.frontDefault ?? "")) { phase in
                     switch phase {
@@ -98,7 +92,7 @@ struct PokemonImageView: View {
                             .background(AppColors.detailBackground)
                             .clipShape(Circle())
                             .scaleEffect(0.8)
-                            .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true))
+                            .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: true)
 
                     case .success(let image):
                         image
@@ -109,7 +103,6 @@ struct PokemonImageView: View {
                             .clipShape(Circle())
                             .shadow(color: .black.opacity(0.3), radius: AppShadow.defaultShadow.radius * 2)
                             .transition(.scale)
-                            .animation(.easeInOut(duration: 0.7))
 
                     case .failure(_):
                         Image(systemName: "xmark.octagon")
@@ -119,7 +112,6 @@ struct PokemonImageView: View {
                             .foregroundColor(AppColors.errorText)
                             .background(AppColors.detailBackground)
                             .clipShape(Circle())
-                            .animation(.easeInOut(duration: 0.7))
 
                     @unknown default:
                         EmptyView()
@@ -134,15 +126,18 @@ struct PokemonImageView: View {
                     .background(AppColors.detailBackground)
                     .cornerRadius(AppCornerRadius.medium)
                     .shadow(color: .black.opacity(0.1), radius: AppShadow.defaultShadow.radius)
+                    // Esta animação usa um valor Equatable (vm.pokemonDetails == nil) e está correta
                     .animation(.easeOut(duration: 0.4), value: vm.pokemonDetails == nil)
             }
         }
     }
 }
 
+
+
 struct PokemonBasicInfoView: View {
     let pokemonDetails: DetailPokemon?
-    @ObservedObject var vm: ViewModel // Usar ObservedObject para VM
+    @ObservedObject var vm: ViewModel
 
     var body: some View {
         Group {
@@ -190,7 +185,7 @@ struct PokemonTypesSection: View {
 
 struct PokemonAbilitiesSection: View {
     let pokemonDetails: DetailPokemon
-    @ObservedObject var vm: ViewModel // Usar ObservedObject para VM
+    @ObservedObject var vm: ViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xsmall) {
@@ -227,6 +222,7 @@ struct PokemonStatsSection: View {
         }
     }
 }
+
 
 // MARK: - Preview
 

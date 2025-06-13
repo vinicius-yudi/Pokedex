@@ -42,7 +42,7 @@ struct LoginView: View {
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.blue)
+                .background(AppColors.buttonPrimary)
                 .cornerRadius(10)
                 .padding(.horizontal)
                 .onChange(of: viewModel.usuarioLogado) { oldUser, newUser in
@@ -61,11 +61,10 @@ struct LoginView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancelar") {
-                        // Este botão agora simplesmente fecharia esta tela se ela fosse uma sheet.
-                        // Como AuthenticationView a gerencia diretamente, pode ser usado para retornar
-                        // ao estado inicial se for necessário.
                         showLoginScreen = false // Volta para o estado onde "Crie sua conta!" aparece
                     }
+                    .foregroundColor(AppColors.buttonPrimary)
+
                 }
             }
         }

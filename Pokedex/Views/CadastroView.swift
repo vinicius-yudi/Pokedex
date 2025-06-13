@@ -56,7 +56,7 @@ struct CadastroView: View {
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.blue)
+                .background(AppColors.buttonPrimary)
                 .cornerRadius(10)
                 .padding(.horizontal)
                 .alert("Sucesso!", isPresented: $viewModel.cadastroSucesso) {
@@ -72,13 +72,15 @@ struct CadastroView: View {
                 // Configura o DataManager do ViewModel com o ModelContext
                 viewModel.setupDataManager(modelContext: modelContext)
             }
-            .navigationTitle("Cadastro")
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancelar") {
                         dismiss()
                     }
+                    .foregroundColor(AppColors.buttonPrimary)
+
                 }
             }
         }

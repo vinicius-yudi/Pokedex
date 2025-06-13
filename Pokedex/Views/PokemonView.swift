@@ -17,7 +17,6 @@ struct PokemonView: View {
                         .background(AppColors.cardBackground)
                         .clipShape(Circle())
                         .opacity(0.8)
-                        .animation(.easeIn(duration: 0.5))
 
                 case .success(let image):
                     image
@@ -26,17 +25,16 @@ struct PokemonView: View {
                         .frame(width: dimensions, height: dimensions)
                         .background(AppColors.cardBackground)
                         .clipShape(Circle())
-                        .animation(.easeIn(duration: 0.5))
+                        .transition(.opacity)
 
                 case .failure(_):
-                    Image(systemName: "xmark-octagon")
+                    Image(systemName: "xmark.octagon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: dimensions, height: dimensions)
                         .foregroundColor(AppColors.errorText)
                         .background(AppColors.cardBackground)
                         .clipShape(Circle())
-                        .animation(.easeIn(duration: 0.5))
 
                 @unknown default:
                     EmptyView()
