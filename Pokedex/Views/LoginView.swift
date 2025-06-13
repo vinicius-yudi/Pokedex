@@ -56,7 +56,7 @@ struct LoginView: View {
             .onAppear {
                 viewModel.setupDataManager(modelContext: modelContext)
             }
-            .navigationTitle("Login")
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

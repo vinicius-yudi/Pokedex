@@ -1,5 +1,10 @@
 // Pokedex/Views/PokemonDetailView.swift
-// (Conteúdo completo do arquivo com as correções)
+//
+//  PokemonDetailView.swift
+//  Pokedex
+//
+//  Created by user277066 on 6/12/25.
+//
 
 import SwiftUI
 
@@ -20,7 +25,7 @@ struct PokemonDetailView: View {
 
             ScrollView {
                 VStack(spacing: AppSpacing.large) {
-                    // Imagem do Pokémon
+                    // Imagem do Pokémon - AGORA USANDO A SUBVIEW PokemonImageView
                     PokemonImageView(vm: vm, pokemon: pokemon)
                         .padding(.top, AppSpacing.large)
                         .padding(.bottom, AppSpacing.medium)
@@ -33,26 +38,26 @@ struct PokemonDetailView: View {
 
                     // Informações Detalhadas (Fundo do Card)
                     VStack(spacing: AppSpacing.medium) {
-                        // ID, Peso, Altura
+                        // ID, Peso, Altura - AGORA USANDO A SUBVIEW PokemonBasicInfoView
                         PokemonBasicInfoView(pokemonDetails: vm.pokemonDetails, vm: vm)
                             .font(AppFonts.body())
                             .foregroundColor(AppColors.textPrimary)
                         
                         Divider() // Separador
 
-                        // Tipos
+                        // Tipos - AGORA USANDO A SUBVIEW PokemonTypesSection
                         if let pokemonDetails = vm.pokemonDetails {
                             PokemonTypesSection(pokemonDetails: pokemonDetails)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, AppSpacing.xsmall)
 
-                            // Habilidades
+                            // Habilidades - AGORA USANDO A SUBVIEW PokemonAbilitiesSection
                             PokemonAbilitiesSection(pokemonDetails: pokemonDetails, vm: vm)
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
                             Divider() // Separador
 
-                            // Stats Base
+                            // Stats Base - AGORA USANDO A SUBVIEW PokemonStatsSection
                             PokemonStatsSection(pokemonDetails: pokemonDetails)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -75,48 +80,21 @@ struct PokemonDetailView: View {
     }
 }
 
-// MARK: - Subviews para PokemonDetailView (coloque estas structs DENTRO do arquivo PokemonDetailView.swift)
+// MARK: - Subviews para PokemonDetailView
 
+// Esta struct PokemonImageView SUBSTITUIU o bloco anterior de AsyncImage na PokemonDetailView
 struct PokemonImageView: View {
     @ObservedObject var vm: ViewModel
     let pokemon: Pokemon
 
     var body: some View {
-        Group {
+        Group { // Usar Group para o indicador de carregamento
             if let pokemonDetails = vm.pokemonDetails {
-                AsyncImage(url: URL(string: pokemonDetails.sprites.frontDefault ?? "")) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: 200, height: 200)
-                            .background(AppColors.detailBackground)
-                            .clipShape(Circle())
-                            .scaleEffect(0.8)
-                            .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: true)
-
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 200, height: 200)
-                            .background(AppColors.detailBackground)
-                            .clipShape(Circle())
-                            .shadow(color: .black.opacity(0.3), radius: AppShadow.defaultShadow.radius * 2)
-                            .transition(.scale)
-
-                    case .failure(_):
-                        Image(systemName: "xmark.octagon")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 200, height: 200)
-                            .foregroundColor(AppColors.errorText)
-                            .background(AppColors.detailBackground)
-                            .clipShape(Circle())
-
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
+                CachedImageView(urlString: pokemonDetails.sprites.frontDefault ?? "",
+                                dimensions: 200,
+                                circleBackground: true) // É um círculo
+                    .shadow(color: .black.opacity(0.3), radius: AppShadow.defaultShadow.radius * 2) // Sombra maior
+                    .animation(.easeOut(duration: 0.4), value: vm.pokemonDetails == nil) // Animação de aparição do próprio CachedImageView ou do seu estado de carregamento
             } else {
                 ProgressView("Carregando imagem...")
                     .font(AppFonts.headline())
@@ -126,15 +104,13 @@ struct PokemonImageView: View {
                     .background(AppColors.detailBackground)
                     .cornerRadius(AppCornerRadius.medium)
                     .shadow(color: .black.opacity(0.1), radius: AppShadow.defaultShadow.radius)
-                    // Esta animação usa um valor Equatable (vm.pokemonDetails == nil) e está correta
                     .animation(.easeOut(duration: 0.4), value: vm.pokemonDetails == nil)
             }
         }
     }
 }
 
-
-
+// Esta struct é para as informações básicas (ID, Peso, Altura)
 struct PokemonBasicInfoView: View {
     let pokemonDetails: DetailPokemon?
     @ObservedObject var vm: ViewModel
@@ -160,6 +136,7 @@ struct PokemonBasicInfoView: View {
     }
 }
 
+// Esta struct é para a seção de Tipos
 struct PokemonTypesSection: View {
     let pokemonDetails: DetailPokemon
 
@@ -183,6 +160,7 @@ struct PokemonTypesSection: View {
     }
 }
 
+// Esta struct é para a seção de Habilidades
 struct PokemonAbilitiesSection: View {
     let pokemonDetails: DetailPokemon
     @ObservedObject var vm: ViewModel
@@ -198,6 +176,7 @@ struct PokemonAbilitiesSection: View {
     }
 }
 
+// Esta struct é para a seção de Stats Base
 struct PokemonStatsSection: View {
     let pokemonDetails: DetailPokemon
 

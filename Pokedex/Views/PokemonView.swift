@@ -1,5 +1,3 @@
-// Pokedex/Views/PokemonView.swift
-
 import SwiftUI
 
 struct PokemonView: View {
@@ -9,37 +7,11 @@ struct PokemonView: View {
 
     var body: some View {
         VStack {
-            AsyncImage(url: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(vm.getPokemonIndex(pokemon: pokemon)).png")) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView()
-                        .frame(width: dimensions, height: dimensions)
-                        .background(AppColors.cardBackground)
-                        .clipShape(Circle())
-                        .opacity(0.8)
+            // Substituído AsyncImage por CachedImageView
+            CachedImageView(urlString: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(vm.getPokemonIndex(pokemon: pokemon)).png",
+                            dimensions: dimensions,
+                            circleBackground: true) // É um círculo
 
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: dimensions, height: dimensions)
-                        .background(AppColors.cardBackground)
-                        .clipShape(Circle())
-                        .transition(.opacity)
-
-                case .failure(_):
-                    Image(systemName: "xmark.octagon")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: dimensions, height: dimensions)
-                        .foregroundColor(AppColors.errorText)
-                        .background(AppColors.cardBackground)
-                        .clipShape(Circle())
-
-                @unknown default:
-                    EmptyView()
-                }
-            }
             Text("\(pokemon.name.capitalized)")
                 .font(AppFonts.capitalizedName())
                 .foregroundColor(AppColors.textPrimary)
