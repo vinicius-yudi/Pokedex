@@ -13,6 +13,7 @@ Sua natureza RESTful e as respostas JSON bem estruturadas simplificam o consumo 
 
 # Arquitetura do Aplicativo: MVVM
 O aplicativo segue o padrão de arquitetura Model-View-ViewModel (MVVM), que promove uma clara separação de responsabilidades, tornando o código mais fácil de manter, testar e escalar.
+![image alt](https://github.com/vinicius-yudi/Pokedex/blob/main/Diagrama%20MVVM.png?raw=true)
 
 
 
