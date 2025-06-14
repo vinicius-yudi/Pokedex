@@ -1,21 +1,17 @@
 // Pokedex/Views/PokemonDetailView.swift
-//
-//  PokemonDetailView.swift
-//  Pokedex
-//
-//  Created by user277066 on 6/12/25.
-//
+// (Conteúdo COMPLETO do arquivo)
 
 import SwiftUI
 
+
 struct PokemonDetailView: View {
-    // Não precisa mais de @EnvironmentObject var vm: ViewModel
-    // Agora tem seu próprio ViewModel
-    @StateObject var vm: PokemonDetailViewModel // MODIFICADO: Usando PokemonDetailViewModel
+    @StateObject var vm: PokemonDetailViewModel
+    @EnvironmentObject var mainVM: FavoritosViewModel
     
-    // O initializer agora recebe um Pokemon e cria a ViewModel
-    init(pokemon: Pokemon) {
-        // Inicializa a StateObject com a ViewModel específica para este Pokémon
+    
+
+    // O initializer agora recebe apenas o Pokemon
+    init(pokemon: Pokemon) { 
         _vm = StateObject(wrappedValue: PokemonDetailViewModel(pokemon: pokemon))
     }
     
@@ -32,39 +28,35 @@ struct PokemonDetailView: View {
 
             ScrollView {
                 VStack(spacing: AppSpacing.large) {
-                    // Imagem do Pokémon - PokemonImageView agora usa a nova PokemonDetailViewModel
-                    PokemonImageView(vm: vm) // Passa a ViewModel diretamente para a subview
+                    // Imagem do Pokémon
+                    PokemonImageView(vm: vm)
                         .padding(.top, AppSpacing.large)
                         .padding(.bottom, AppSpacing.medium)
 
                     // Nome do Pokémon
-                    Text("\(vm.pokemon.name.capitalized)") // Acessando o nome do pokemon da ViewModel
+                    Text("\(vm.pokemon.name.capitalized)")
                         .font(AppFonts.largeTitle())
                         .foregroundColor(AppColors.textPrimary)
                         .padding(.bottom, AppSpacing.small)
 
                     // Informações Detalhadas (Fundo do Card)
                     VStack(spacing: AppSpacing.medium) {
-                        // ID, Peso, Altura - PokemonBasicInfoView agora usa a nova PokemonDetailViewModel
                         PokemonBasicInfoView(pokemonDetails: vm.pokemonDetails, vm: vm)
                             .font(AppFonts.body())
                             .foregroundColor(AppColors.textPrimary)
                         
                         Divider() // Separador
 
-                        // Tipos - PokemonTypesSection
                         if let pokemonDetails = vm.pokemonDetails {
                             PokemonTypesSection(pokemonDetails: pokemonDetails)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, AppSpacing.xsmall)
 
-                            // Habilidades - PokemonAbilitiesSection agora usa a nova PokemonDetailViewModel
                             PokemonAbilitiesSection(pokemonDetails: pokemonDetails, vm: vm)
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
                             Divider() // Separador
 
-                            // Stats Base - PokemonStatsSection
                             PokemonStatsSection(pokemonDetails: pokemonDetails)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -76,24 +68,40 @@ struct PokemonDetailView: View {
                     .padding(.horizontal, AppSpacing.medium)
                     .padding(.bottom, AppSpacing.xlarge)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
+
+                    // BOTÃO PARA NAVEGAR PARA FAVORITOS
+                    NavigationLink(destination: FavoritosView()) { // NAVEGA PARA FavoritosView
+                        Label("Favoritar Pokemon", systemImage: "heart.fill")
+                            .font(AppFonts.headline())
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(AppColors.buttonSecondary) // Usando uma cor de botão secundária
+                            .cornerRadius(AppCornerRadius.medium)
+                            .shadow(color: .black.opacity(0.1), radius: AppShadow.defaultShadow.radius)
+                    }
+                    .padding(.horizontal, AppSpacing.medium)
+                    .padding(.bottom, AppSpacing.medium)
                 }
+                
             }
         }
-        // Removido .onAppear { vm.getDetails(pokemon: pokemon) } pois o init da ViewModel já faz isso
-        .navigationTitle(vm.pokemon.name.capitalized) // Acessando o nome do pokemon da ViewModel
+        .onAppear {
+            vm.getDetails() // Apenas carrega detalhes, sem lógica de favoritos
+        }
+        // Removido: .onChange(of: usuarioAtual)
+        .navigationTitle(vm.pokemon.name.capitalized)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-// MARK: - Subviews para PokemonDetailView
+// MARK: - Subviews para PokemonDetailView (mantidas as mesmas, sem modificações de favoritos)
 
-// Esta struct PokemonImageView agora usa a PokemonDetailViewModel
 struct PokemonImageView: View {
     @ObservedObject var vm: PokemonDetailViewModel
 
     var body: some View {
         Group {
-            // Acesso aos detalhes através da ViewModel
             if let pokemonDetails = vm.pokemonDetails {
                 CachedImageView(urlString: pokemonDetails.sprites.frontDefault ?? "",
                                 dimensions: 200,
@@ -101,7 +109,6 @@ struct PokemonImageView: View {
                     .shadow(color: .black.opacity(0.3), radius: AppShadow.defaultShadow.radius * 2)
                     .animation(.easeOut(duration: 0.4), value: vm.pokemonDetails == nil)
             } else {
-                // Indicador de carregamento enquanto os detalhes são buscados ou há erro
                 ProgressView("Carregando imagem...")
                     .font(AppFonts.headline())
                     .foregroundColor(AppColors.textPrimary)
@@ -116,10 +123,9 @@ struct PokemonImageView: View {
     }
 }
 
-// Esta struct é para as informações básicas (ID, Peso, Altura)
 struct PokemonBasicInfoView: View {
     let pokemonDetails: DetailPokemon?
-    @ObservedObject var vm: PokemonDetailViewModel // MODIFICADO
+    @ObservedObject var vm: PokemonDetailViewModel
 
     var body: some View {
         Group {
@@ -131,18 +137,17 @@ struct PokemonBasicInfoView: View {
             HStack {
                 Text("**Peso:**")
                 Spacer()
-                Text("\(vm.formatHW(value: pokemonDetails?.weight ?? 0)) KG") // Chamada de método da nova ViewModel
+                Text("\(vm.formatHW(value: pokemonDetails?.weight ?? 0)) KG")
             }
             HStack {
                 Text("**Altura:**")
                 Spacer()
-                Text("\(vm.formatHW(value: pokemonDetails?.height ?? 0)) M") // Chamada de método da nova ViewModel
+                Text("\(vm.formatHW(value: pokemonDetails?.height ?? 0)) M")
             }
         }
     }
 }
 
-// Esta struct é para a seção de Tipos
 struct PokemonTypesSection: View {
     let pokemonDetails: DetailPokemon
 
@@ -166,23 +171,21 @@ struct PokemonTypesSection: View {
     }
 }
 
-// Esta struct é para a seção de Habilidades
 struct PokemonAbilitiesSection: View {
     let pokemonDetails: DetailPokemon
-    @ObservedObject var vm: PokemonDetailViewModel // MODIFICADO
+    @ObservedObject var vm: PokemonDetailViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xsmall) {
             Text("**Habilidades:**")
                 .font(AppFonts.headline())
-            Text(vm.getPokemonAbilities(pokemon: pokemonDetails)) // Chamada de método da nova ViewModel
+            Text(vm.getPokemonAbilities(pokemon: pokemonDetails))
                 .font(AppFonts.body())
                 .foregroundColor(AppColors.textPrimary)
         }
     }
 }
 
-// Esta struct é para a seção de Stats Base
 struct PokemonStatsSection: View {
     let pokemonDetails: DetailPokemon
 
@@ -211,13 +214,11 @@ struct PokemonStatsSection: View {
 // MARK: - Preview
 
 struct PokemonDetailView_Previews: PreviewProvider {
+    // Removido: @State static var previewUsuario
     static var previews: some View {
         NavigationView {
-            // No Preview, crie uma instância de PokemonDetailView com um Pokémon de exemplo
-            // A ViewModel será criada automaticamente no init da view
-            PokemonDetailView(pokemon: Pokemon.samplePokemon)
+            PokemonDetailView(pokemon: Pokemon.samplePokemon) // Removido usuarioAtual
         }
-        // Para que o Preview funcione corretamente com SwiftData, você precisa fornecer um ModelContainer
-        .modelContainer(for: [Usuario.self, Favorito.self], inMemory: true)
+        // Não precisa de .modelContainer aqui se não estamos usando SwiftData na preview
     }
 }
