@@ -3,14 +3,14 @@ import SwiftData
 
 @Model
 class Favorito {
-    @Attribute(.unique) var id: UUID
-    var pokemonId: Int
+    var id: UUID
+    var pokemonId: Int // ID numérico do Pokémon da PokeAPI (ex: 1 para Bulbasaur)
     var pokemonName: String
-    var pokemonImageUrl: String?
+    var pokemonImageUrl: String? // URL da imagem para exibição na lista de favoritos
 
-    @Relationship var usuario: Usuario
+    @Relationship var usuario: Usuario? // Relacionamento com o usuário que favoritou
 
-    init(id: UUID = UUID(), pokemonId: Int, pokemonName: String, pokemonImageUrl: String? = nil, usuario: Usuario) {
+    init(id: UUID = UUID(), pokemonId: Int, pokemonName: String, pokemonImageUrl: String? = nil, usuario: Usuario? = nil) {
         self.id = id
         self.pokemonId = pokemonId
         self.pokemonName = pokemonName

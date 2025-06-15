@@ -30,6 +30,8 @@ class PokedexListViewModel: ObservableObject {
         loadMorePokemon() // Carrega a primeira página ao inicializar
     }
     
+
+    
     // Função para carregar mais Pokémon (Paginação)
     func loadMorePokemon() {
         guard !isLoadingMorePokemon && canLoadMorePokemon else { return }

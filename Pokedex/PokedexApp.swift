@@ -10,6 +10,8 @@ import SwiftData
 
 @main
 struct PokedexApp: App {
+    @StateObject var vm = PokedexListViewModel()
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([Usuario.self, Favorito.self])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
@@ -24,6 +26,8 @@ struct PokedexApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(vm)
+
         }
         .modelContainer(sharedModelContainer)
     }
